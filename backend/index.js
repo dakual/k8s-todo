@@ -5,7 +5,7 @@ const db      = require("./app/models");
 const app     = express();
 
 var corsOptions = {
-  origin: process.env.CLIENT_ORIGIN || "http://localhost:3000"
+  origin: process.env.BACKEND_CLIENT_ORIGIN || "http://localhost:8080"
 };
 
 app.use(cors(corsOptions));
@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 
 require("./app/routes/todo.routes")(app);
 
-const PORT = process.env.BACKEND_DOCKER_PORT || 8080;
+const PORT = process.env.BACKEND_NODE_PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

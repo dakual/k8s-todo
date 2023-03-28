@@ -22,34 +22,33 @@ services:
       - backend
   
   backend:
-    depends_on:
-      mysqldb:
-        condition: service_healthy
     build: ./backend
     restart: unless-stopped
     env_file: ./.env
-    ports:
-      - $BACKEND_LOCAL_PORT:$BACKEND_DOCKER_PORT
     environment:
-      - DB_HOST=mysqldb
+      - DB_HOST=$MYSQLDB_HOST
       - DB_USER=$MYSQLDB_USER
       - DB_PASSWORD=$MYSQLDB_ROOT_PASSWORD
       - DB_NAME=$MYSQLDB_DATABASE
       - DB_PORT=$MYSQLDB_DOCKER_PORT
-      - CLIENT_ORIGIN=$FRONTEND_CLIENT_ORIGIN
+    ports:
+      - $BACKEND_LOCAL_PORT:$BACKEND_NODE_PORT
+    depends_on:
+      mysqldb:
+        condition: service_healthy
     networks:
       - backend
       - frontend
 
   frontend:
-    depends_on:
-      - backend
     build:
       context: ./frontend
       args:
-        - REACT_APP_BACKEND_URL=$BACKEND_URL
+        - REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
     ports:
-      - $FRONTEND_LOCAL_PORT:$FRONTEND_DOCKER_PORT
+      - $FRONTEND_LOCAL_PORT:$FRONTEND_NODE_PORT
+    depends_on:
+      - backend
     networks:
       - frontend  
 
