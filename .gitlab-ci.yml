@@ -47,7 +47,8 @@ deploy:
   script:
     - kubectl apply -f k8s/
   dependencies:
-    - build
+    - build:fe
+    - build:be
   tags:
     - ${RUNNER_TAGS}
 
