@@ -6,17 +6,33 @@ stages:
   - deploy
   - destroy
 
-build:
+build:be:
   stage: build
   image: docker:latest
   services:
     - docker:dind
   before_script:
+    - cd backend
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --tag $CI_REGISTRY_IMAGE:latest .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-    - docker push $CI_REGISTRY_IMAGE:latest
+    - docker build --tag $CI_REGISTRY_IMAGE-be:$CI_COMMIT_SHORT_SHA --tag $CI_REGISTRY_IMAGE-be:latest .
+    - docker push $CI_REGISTRY_IMAGE-be:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE-be:latest
+  tags:
+    - ${RUNNER_TAGS}
+
+build:fe:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - cd frontend
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build --tag $CI_REGISTRY_IMAGE-fe:$CI_COMMIT_SHORT_SHA --tag $CI_REGISTRY_IMAGE-fe:latest .
+    - docker push $CI_REGISTRY_IMAGE-fe:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE-fe:latest
   tags:
     - ${RUNNER_TAGS}
 
