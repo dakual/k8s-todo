@@ -1,0 +1,52 @@
+variables:
+  RUNNER_TAGS: dev
+
+stages:
+  - build
+  - deploy
+  - destroy
+
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+  tags:
+    - ${RUNNER_TAGS}
+
+deploy:
+  stage: deploy
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  before_script: 
+    - kubectl config get-contexts
+    - kubectl config use-context dakual/ci-todo/app:minikube
+  script:
+    - kubectl apply -f k8s/
+  dependencies:
+    - build
+  tags:
+    - ${RUNNER_TAGS}
+
+destroy:
+  stage: destroy
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  before_script: 
+    - kubectl config get-contexts
+    - kubectl config use-context dakual/ci-todo/app:minikube
+  script:
+    - kubectl delete -f deployment.yaml 
+  when: manual
+  dependencies:
+    - deploy
+  tags:
+    - ${RUNNER_TAGS}
