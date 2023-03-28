@@ -1,6 +1,6 @@
 DOCKER_USERNAME ?= kurtay
-FT_NAME ?= k8s-dev-ft
-BE_NAME ?= k8s-dev-be
+FT_NAME ?= k8s-todo-ft
+BE_NAME ?= k8s-todo-be
 GIT_HASH ?= $(shell git log --format="%h" -n 1)
 
 build:

@@ -14,7 +14,7 @@ spec:
     spec: 
       containers: 
       - name: frontend
-        image: kurtay/k8s-dev-ft
+        image: kurtay/k8s-todo-ft
         ports: 
         - containerPort: 80 
         imagePullPolicy: Always

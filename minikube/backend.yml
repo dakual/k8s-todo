@@ -14,7 +14,7 @@ spec:
     spec: 
       containers: 
       - name: backend
-        image: kurtay/k8s-dev-be
+        image: kurtay/k8s-todo-be
         ports: 
         - containerPort: 3000 
         imagePullPolicy: Always
