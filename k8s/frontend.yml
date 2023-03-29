@@ -14,7 +14,7 @@ spec:
     spec: 
       containers: 
       - name: frontend
-        image: registry.gitlab.com/ci-todo/app/frontend:latest
+        image: registry.gitlab.com/ci-todo/app/frontend:dev-main
         ports: 
         - containerPort: 80 
         imagePullPolicy: Always

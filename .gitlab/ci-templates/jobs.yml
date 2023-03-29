@@ -1,0 +1,25 @@
+"Build Backend":
+  extends: 
+    - .build
+  variables:
+    APP: frontend
+
+"Build Frontend":
+  extends: 
+    - .build
+  variables:
+    APP: backend
+
+"Deloy All":
+  extends: 
+    - .deploy
+  needs:
+    - "Build Backend"
+    - "Build Frontend"
+
+"Destroy All":
+  extends: 
+    - .destroy
+  needs:
+    - "Deloy All"
+  when: manual
