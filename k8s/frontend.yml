@@ -14,10 +14,12 @@ spec:
     spec: 
       containers: 
       - name: frontend
-        image: kurtay/k8s-todo-ft
+        image: registry.gitlab.com/ci-todo/app/fe:latest
         ports: 
         - containerPort: 80 
         imagePullPolicy: Always
+      imagePullSecrets:
+      - name: registry-credentials
 ---
 apiVersion: v1 
 kind: Service 

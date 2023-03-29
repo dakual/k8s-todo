@@ -1,40 +1,27 @@
 variables:
-  RUNNER_TAGS: dev
+  RUNNER: dev
+  ENV: dev
 
 stages:
   - build
   - deploy
   - destroy
 
-build:be:
+.build:
   stage: build
   image: docker:latest
   services:
     - docker:dind
   before_script:
-    - cd backend
+    - cd ${APP}
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - docker build --tag ${CI_REGISTRY_IMAGE}/be:$CI_COMMIT_SHORT_SHA --tag ${CI_REGISTRY_IMAGE}/be:latest .
-    - docker push ${CI_REGISTRY_IMAGE}/be:$CI_COMMIT_SHORT_SHA
-    - docker push ${CI_REGISTRY_IMAGE}/be:latest
+    - IMAGE_TAG=${ENV}-${CI_COMMIT_REF_SLUG}
+    - IMAGE=${CI_REGISTRY_IMAGE}/${APP}:${IMAGE_TAG}
+    - docker build --tag ${IMAGE} .
+    - docker push ${IMAGE}
   tags:
-    - ${RUNNER_TAGS}
-
-build:fe:
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  before_script:
-    - cd frontend
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - docker build --tag ${CI_REGISTRY_IMAGE}/fe:$CI_COMMIT_SHORT_SHA --tag ${CI_REGISTRY_IMAGE}/fe:latest .
-    - docker push ${CI_REGISTRY_IMAGE}/fe:$CI_COMMIT_SHORT_SHA
-    - docker push ${CI_REGISTRY_IMAGE}/fe:latest
-  tags:
-    - ${RUNNER_TAGS}
+    - ${RUNNER}
 
 deploy:
   stage: deploy
@@ -50,7 +37,7 @@ deploy:
     - build:fe
     - build:be
   tags:
-    - ${RUNNER_TAGS}
+    - ${RUNNER}
 
 destroy:
   stage: destroy
@@ -61,9 +48,22 @@ destroy:
     - kubectl config get-contexts
     - kubectl config use-context dakual/ci-todo/app:minikube
   script:
-    - kubectl delete -f deployment.yaml 
+    - kubectl delete -f k8s/
   when: manual
   dependencies:
     - deploy
   tags:
-    - ${RUNNER_TAGS}
+    - ${RUNNER}
+
+
+"Build Backend":
+  extends: 
+    - .build
+  variables:
+    APP: frontend
+
+"Build Frontend":
+  extends: 
+    - .build
+  variables:
+    APP: backend
