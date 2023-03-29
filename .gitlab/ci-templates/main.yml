@@ -1,14 +1,14 @@
 include:
-  - local: 'environments/dev.yml'
+  - local: '.gitlab/ci-templates/environments/dev.yml'
     rules:
     - if: $CI_COMMIT_TAG !~ /release-v.*/ && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-  - local: 'environments/stg.yml'
+  - local: '.gitlab/ci-templates/environments/stg.yml'
     rules:
     - if: $CI_COMMIT_TAG !~ /release-v.*/ && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  - local: 'environments/prd.yml'
+  - local: '.gitlab/ci-templates/environments/prd.yml'
     rules:
     - if: $CI_COMMIT_TAG =~ /release-v.*/
-  - local: 'jobs.yml'
+  - local: '.gitlab/ci-templates/jobs.yml'
 
 workflow:
   rules:
