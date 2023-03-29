@@ -34,8 +34,8 @@ deploy:
   script:
     - kubectl apply -f k8s/
   dependencies:
-    - build:fe
-    - build:be
+    - "Build Backend"
+    - "Build Frontend"
   tags:
     - ${RUNNER}
 
