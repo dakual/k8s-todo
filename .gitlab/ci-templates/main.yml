@@ -29,7 +29,7 @@ stages:
   services:
     - docker:dind
   before_script:
-    - cd ${APP}
+    - cd app/${APP}
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - IMAGE_TAG=${ENV}-${CI_COMMIT_REF_SLUG}
@@ -79,6 +79,12 @@ stages:
         - name: 'Docker Container'
           url: 'https://${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}'
   rules:
+    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes:
+        paths:
+          - "app/**/*"
     - if: '$CI_COMMIT_TAG'
     - if: '$CI_COMMIT_TAG =~ /release-v.*/'
     - when: never
+  tags:
+    - ${RUNNER}
