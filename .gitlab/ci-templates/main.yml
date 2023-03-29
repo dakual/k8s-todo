@@ -78,7 +78,7 @@ stages:
       links:
         - name: 'Docker Container'
           url: 'https://${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}'
-  needs:
+  dependencies:
     - .build
   rules:
     - if: '$CI_COMMIT_TAG'
