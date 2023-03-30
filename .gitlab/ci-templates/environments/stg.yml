@@ -28,6 +28,14 @@ stg:deploy:
     - stg:build:frontend
   when: manual
 
+stg:release:
+  extends: 
+    - .stg-rules
+    - .release
+  needs:
+    - stg:deploy
+  when: manual
+
 stg:destroy:
   extends: 
     - .stg-rules
