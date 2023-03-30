@@ -3,3 +3,35 @@ variables:
   ENV: stg
   K8S_CLUSTER: ci-todo/app:minikube
   K8S_NAMESPACE: staging
+
+
+"Build Backend":
+  extends: 
+    - .stg-rules
+    - .build
+  variables:
+    APP: frontend
+
+"Build Frontend":
+  extends: 
+    - .stg-rules
+    - .build
+  variables:
+    APP: backend
+
+"Deploy All":
+  extends: 
+    - .stg-rules
+    - .deploy
+  needs:
+    - "Build Backend"
+    - "Build Frontend"
+  when: manual
+
+"Destroy All":
+  extends: 
+    - .stg-rules
+    - .destroy
+  needs:
+    - "Deploy All"
+  when: manual
