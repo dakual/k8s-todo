@@ -5,33 +5,33 @@ variables:
   K8S_NAMESPACE: staging
 
 
-"Build Backend":
+stg:build:backend:
   extends: 
     - .stg-rules
     - .build
   variables:
     APP: frontend
 
-"Build Frontend":
+stg:build:frontend:
   extends: 
     - .stg-rules
     - .build
   variables:
     APP: backend
 
-"Deploy All":
+stg:deploy:
   extends: 
     - .stg-rules
     - .deploy
   needs:
-    - "Build Backend"
-    - "Build Frontend"
+    - stg:build:backend
+    - stg:build:frontend
   when: manual
 
-"Destroy All":
+stg:destroy:
   extends: 
     - .stg-rules
     - .destroy
   needs:
-    - "Deploy All"
+    - stg:deploy
   when: manual

@@ -2,4 +2,36 @@ variables:
   RUNNER: dev
   ENV: dev
   K8S_CLUSTER: ci-todo/app:minikube
-  K8S_NAMESPACE: development
+  K8S_NAMESPACE: dev
+
+
+dev:build:backend:
+  extends: 
+    - .dev-rules
+    - .build
+  variables:
+    APP: frontend
+
+dev:build:frontend:
+  extends: 
+    - .dev-rules
+    - .build
+  variables:
+    APP: backend
+
+dev:deploy:
+  extends: 
+    - .dev-rules
+    - .deploy
+  needs:
+    - dev:build:backend
+    - dev:build:frontend
+  # when: manual
+
+dev:destroy:
+  extends: 
+    - .dev-rules
+    - .destroy
+  needs:
+    - dev:deploy
+  when: manual
