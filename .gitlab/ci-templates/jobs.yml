@@ -10,7 +10,7 @@
   variables:
     APP: backend
 
-"Deloy All":
+"Deploy All":
   extends: 
     - .deploy
   needs:

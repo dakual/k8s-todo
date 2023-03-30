@@ -53,11 +53,13 @@ stages:
   extends:
     - .deploy-configure
   stage: deploy
+  before_script: 
+    - cd k8s
   script:
     - kubectl create namespace ${K8S_NAMESPACE}
     - sed -i 's/\(image:\).*$/\1 ${IMAGE}/g' frontend.yml
     - sed -i 's/\(image:\).*$/\1 ${IMAGE}/g' backend.yml
-    - kubectl apply -f k8s/ -n ${K8S_NAMESPACE}
+    - kubectl apply -f . -n ${K8S_NAMESPACE}
   tags:
     - ${RUNNER}
 
@@ -65,8 +67,10 @@ stages:
   extends:
     - .deploy-configure
   stage: destroy
+  before_script: 
+    - cd k8s
   script:
-    - kubectl delete -f k8s/ -n ${K8S_NAMESPACE}
+    - kubectl delete -f . -n ${K8S_NAMESPACE}
   tags:
     - ${RUNNER}
 
