@@ -40,6 +40,9 @@ stages:
     - docker push ${IMAGE}
   tags:
     - ${RUNNER}
+  rules:
+    - changes: 
+        - app/**/*
 
 .deploy-configure:
   image:
