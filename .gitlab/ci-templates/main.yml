@@ -55,8 +55,8 @@ stages:
   stage: deploy
   script:
     - kubectl create namespace ${K8S_NAMESPACE}
-    - sed -i -e 's/image:.*$/image: ${IMAGE}/g' frontend.yml
-    - sed -i -e 's/image:.*$/image: ${IMAGE}/g' backend.yml
+    - sed -i 's/\(image:\).*$/\1 ${IMAGE}/g' frontend.yml
+    - sed -i 's/\(image:\).*$/\1 ${IMAGE}/g' backend.yml
     - kubectl apply -f k8s/ -n ${K8S_NAMESPACE}
   tags:
     - ${RUNNER}
