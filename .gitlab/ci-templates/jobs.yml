@@ -13,9 +13,9 @@
 "Deploy All":
   extends: 
     - .deploy
-  needs:
-    - "Build Backend"
-    - "Build Frontend"
+  # needs:
+  #   - "Build Backend"
+  #   - "Build Frontend"
 
 "Destroy All":
   extends: 
