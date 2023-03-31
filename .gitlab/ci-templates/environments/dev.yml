@@ -23,6 +23,11 @@ dev:deploy:
   extends: 
     - .dev-rules
     - .deploy
+  environment:
+    on_stop: dev:destroy
+    deployment_tier: development
+    auto_stop_in: 2 minutes
+
   needs:
     - dev:build:backend
     - dev:build:frontend
