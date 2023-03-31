@@ -3,7 +3,7 @@ variables:
   ENV: dev
   K8S_CLUSTER: ci-todo/app:minikube
   K8S_NAMESPACE: dev
-  DOMAIN: development.com
+  DOMAIN: ${ENV}-${CI_COMMIT_REF_SLUG}.example.com
 
 
 dev:build:backend:
@@ -21,8 +21,6 @@ dev:build:frontend:
     - .build
 
 dev:deploy:
-  variables:
-    DOMAIN: ${ENV}-${CI_COMMIT_REF_SLUG:0:55}.${DOMAIN}
   extends: 
     - .dev-rules
     - .deploy

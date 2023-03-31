@@ -3,7 +3,7 @@ variables:
   ENV: stg
   K8S_CLUSTER: ci-todo/app:minikube
   K8S_NAMESPACE: staging
-  DOMAIN: staging.com
+  DOMAIN: ${ENV}.example.com
 
 
 stg:build:backend:
