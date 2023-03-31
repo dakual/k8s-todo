@@ -22,7 +22,7 @@ db.sequelize.sync().then(() => {
 // });
 
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to application." });
+  res.json({ message: "Welcome to application..." });
 });
 
 require("./app/routes/todo.routes")(app);
