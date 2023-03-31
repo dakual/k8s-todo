@@ -29,7 +29,7 @@ prd:deploy:
     - .deploy
   environment:
     name: ${ENV_LONG}
-    url: https://$CI_ENVIRONMENT_SLUG.${DOMAIN}
+    url: https://${DOMAIN}
     on_stop: prd:destroy
   resource_group: ${ENV_LONG}
   needs:
