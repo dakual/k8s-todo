@@ -7,7 +7,7 @@ include:
       - if: $CI_COMMIT_TAG !~ /release-v.*/ && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   - local: '.gitlab/ci-templates/environments/prd.yml'
     rules:
-      - if: $CI_COMMIT_TAG =~ /release-v.*/ && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      - if: $CI_COMMIT_TAG =~ /release-v.*/
 
 workflow:
   rules:
@@ -34,15 +34,15 @@ stages:
 
 .dev-rules:
   rules:
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG !~ /release-.*/
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG !~ /release-v.*/
 
 .stg-rules:
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG !~ /release-.*/
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG !~ /release-v.*/
 
 .prd-rules:
   rules:
-    - if: $CI_COMMIT_TAG =~ /release-.*/
+    - if: $CI_COMMIT_TAG =~ /release-v.*/
 
 
 .build:
