@@ -25,11 +25,6 @@ stages:
   - destroy
 
 
-.non-changes: &non-changes
-  rules:
-    - changes: 
-        - app/**/*
-
 .dev-rules:
   rules:
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG !~ /release-v.*/
@@ -44,7 +39,6 @@ stages:
 
 
 .build:
-  <<: &non-changes
   stage: build
   image: docker:latest
   variables:
@@ -60,7 +54,9 @@ stages:
     - docker push ${IMAGE}
   tags:
     - ${RUNNER}
-
+  rules:
+    - changes: 
+        - app/**/*
 
 .deploy-configure:
   image:
