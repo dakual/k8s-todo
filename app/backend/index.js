@@ -31,6 +31,3 @@ const PORT = process.env.BACKEND_NODE_PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
-
-
-
