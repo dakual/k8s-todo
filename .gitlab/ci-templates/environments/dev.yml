@@ -3,6 +3,7 @@ variables:
   ENV: dev
   K8S_CLUSTER: ci-todo/app:minikube
   K8S_NAMESPACE: dev
+  DOMAIN: development.com
 
 
 dev:build:backend:

@@ -3,6 +3,7 @@ variables:
   ENV: prd
   K8S_CLUSTER: ci-todo/app:minikube
   K8S_NAMESPACE: production
+  DOMAIN: example.com
 
 
 prd:build:backend:
