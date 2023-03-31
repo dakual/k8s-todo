@@ -20,26 +20,26 @@ stg:build:frontend:
     - .build
 
 stg:deploy:
-  extends: 
-    - .stg-rules
-    - .deploy
   environment:
     name: ${ENV}/${CI_COMMIT_REF_SLUG}
     url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stg:destroy
     deployment_tier: staging
     auto_stop_in: 1 minutes
+  extends: 
+    - .stg-rules
+    - .deploy
   resource_group: ${ENV}/${CI_COMMIT_REF_SLUG}
   # needs:
   #   - stg:build:backend
   #   - stg:build:frontend
 
 stg:destroy:
-  extends: 
-    - .stg-destroy-rules
-    - .destroy
   environment:
     name: ${ENV}/${CI_COMMIT_REF_SLUG}
     action: stop
+  extends: 
+    - .stg-destroy-rules
+    - .destroy
   needs:
     - stg:deploy
