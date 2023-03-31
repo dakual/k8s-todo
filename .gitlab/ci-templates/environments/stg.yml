@@ -39,10 +39,7 @@ stg:destroy:
     name: ${ENV}/${CI_COMMIT_REF_SLUG}
     action: stop
   extends: 
-    # - .stg-destroy-rules
+    - .stg-rules
     - .destroy
   needs:
     - stg:deploy
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG !~ /release-v.*/
-      when: manual
