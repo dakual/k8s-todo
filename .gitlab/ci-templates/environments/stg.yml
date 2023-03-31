@@ -39,7 +39,7 @@ stg:destroy:
     name: ${ENV}/${CI_COMMIT_REF_SLUG}
     action: stop
   extends: 
-    - .stg-destroy-rules
     - .destroy
+    - .stg-destroy-rules
   needs:
     - stg:deploy
