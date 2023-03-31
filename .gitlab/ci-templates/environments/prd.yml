@@ -3,3 +3,43 @@ variables:
   ENV: prd
   K8S_CLUSTER: ci-todo/app:minikube
   K8S_NAMESPACE: production
+
+
+prd:build:backend:
+  extends: 
+    - .prd-rules
+    - .build
+  variables:
+    APP: frontend
+
+prd:build:frontend:
+  extends: 
+    - .prd-rules
+    - .build
+  variables:
+    APP: backend
+
+prd:deploy:
+  extends: 
+    - .prd-rules
+    - .deploy
+  needs:
+    - prd:build:backend
+    - prd:build:frontend
+  when: manual
+
+prd:release:
+  extends: 
+    - .prd-rules
+    - .release
+  needs:
+    - prd:deploy
+  when: manual
+
+prd:destroy:
+  extends: 
+    - .prd-rules
+    - .destroy
+  needs:
+    - prd:deploy
+  when: manual
