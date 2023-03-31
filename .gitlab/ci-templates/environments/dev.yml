@@ -29,7 +29,7 @@ dev:deploy:
     url: https://${ENV}-${CI_COMMIT_REF_SLUG:0:55}.${DOMAIN}
     on_stop: dev:destroy
     deployment_tier: development
-    auto_stop_in: 1 minutes
+    auto_stop_in: 5 minutes
   resource_group: ${ENV}/${CI_COMMIT_REF_SLUG}
   needs:
     - dev:build:backend

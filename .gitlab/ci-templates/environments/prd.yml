@@ -31,7 +31,6 @@ prd:deploy:
     url: https://$CI_ENVIRONMENT_SLUG.${DOMAIN}
     on_stop: prd:destroy
     deployment_tier: production
-    auto_stop_in: 1 minutes
   resource_group: ${K8S_NAMESPACE}
   needs:
     - prd:build:backend
