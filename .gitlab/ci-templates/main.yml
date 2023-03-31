@@ -90,21 +90,6 @@ stages:
     - ${RUNNER}
 
 
-.destroy:
-  extends:
-    - .deploy-configure
-  stage: destroy
-  script:
-    - cd k8s
-    - kubectl delete -f . -n ${K8S_NAMESPACE}
-    - kubectl delete namespace ${K8S_NAMESPACE}
-  environment:
-    name: ${ENV}/${CI_COMMIT_REF_SLUG}
-    action: stop
-  tags:
-    - ${RUNNER}
-
-
 .release:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
@@ -117,5 +102,17 @@ stages:
       links:
         - name: 'Docker Container'
           url: 'https://${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}'
+  tags:
+    - ${RUNNER}
+
+
+.destroy:
+  extends:
+    - .deploy-configure
+  stage: destroy
+  script:
+    - cd k8s
+    - kubectl delete -f . -n ${K8S_NAMESPACE}
+    - kubectl delete namespace ${K8S_NAMESPACE}
   tags:
     - ${RUNNER}
