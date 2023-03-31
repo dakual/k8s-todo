@@ -40,6 +40,7 @@ stg:destroy:
     - .destroy
   environment:
     name: ${ENV}/${CI_COMMIT_REF_SLUG}
+    deployment_tier: staging
     action: stop
   needs:
     - stg:deploy
