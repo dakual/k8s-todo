@@ -26,7 +26,7 @@ stg:deploy:
   environment:
     name: ${ENV}/${CI_COMMIT_REF_SLUG}
     url: https://$CI_ENVIRONMENT_SLUG.example.com
-    on_stop: dev:destroy
+    on_stop: stg:destroy
     deployment_tier: staging
     auto_stop_in: 2 minutes
   needs:
