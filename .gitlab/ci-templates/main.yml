@@ -27,7 +27,7 @@ stages:
   - destroy
 
 
-.non-changes:
+.non-changes: &non-changes
   rules:
     - changes: 
         - app/**/*
@@ -46,6 +46,7 @@ stages:
 
 
 .build:
+  <<: *non-changes
   stage: build
   image: docker:latest
   services:
@@ -80,8 +81,10 @@ stages:
   script:
     - cd k8s
     - kubectl create namespace ${K8S_NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -
-    - sed -i "s/(image:).*$/1\${IMAGE}/g" frontend.yml
-    - sed -i "s/(image:).*$/1\${IMAGE}/g" backend.yml
+    # - sed -i "s/(image:).*$/1\${IMAGE}/g" frontend.yml
+    # - sed -i "s/(image:).*$/1\${IMAGE}/g" backend.yml
+    - sed -i -e "s|<IMAGE>|${IMAGE}|g" frontend.yaml
+    - sed -i -e "s|<IMAGE>|${IMAGE}|g" backend.yaml
     - kubectl apply -f . -n ${K8S_NAMESPACE}
   tags:
     - ${RUNNER}

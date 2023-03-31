@@ -14,7 +14,7 @@ spec:
     spec: 
       containers: 
       - name: backend
-        image: registry.gitlab.com/ci-todo/app/backend:dev-main
+        image: <IMAGE>
         ports: 
         - containerPort: 3000 
         imagePullPolicy: Always
