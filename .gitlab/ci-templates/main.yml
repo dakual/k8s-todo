@@ -70,9 +70,9 @@ stages:
     - docker push ${IMAGE}
   tags:
     - ${RUNNER}
-  rules:
-    - changes: 
-        - app/**/*
+  # rules:
+  #   - changes: 
+  #       - app/**/*
 
 .deploy-configure:
   image:
@@ -127,8 +127,5 @@ stages:
     - cd k8s
     - kubectl delete -f . -n ${K8S_NAMESPACE}
     - kubectl delete namespace ${K8S_NAMESPACE}
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG !~ /release-v.*/
-      when: manual
   tags:
     - ${RUNNER}

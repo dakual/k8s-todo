@@ -12,6 +12,7 @@ prd:build:backend:
     - .prd-rules
     - .build
 
+
 prd:build:frontend:
   variables:
     APP: backend
@@ -19,14 +20,23 @@ prd:build:frontend:
     - .prd-rules
     - .build
 
+
 prd:deploy:
   extends: 
     - .prd-rules
     - .deploy
+  environment:
+    name: ${K8S_NAMESPACE}
+    url: https://$CI_ENVIRONMENT_SLUG.${DOMAIN}
+    on_stop: prd:destroy
+    deployment_tier: production
+    auto_stop_in: 1 minutes
+  resource_group: ${K8S_NAMESPACE}
   needs:
     - prd:build:backend
     - prd:build:frontend
   when: manual
+
 
 prd:release:
   extends: 
@@ -36,10 +46,13 @@ prd:release:
     - prd:deploy
   when: manual
 
+
 prd:destroy:
   extends: 
     - .prd-destroy-rules
     - .destroy
+  environment:
+    name: ${K8S_NAMESPACE}
+    action: stop
   needs:
     - prd:deploy
-  when: manual

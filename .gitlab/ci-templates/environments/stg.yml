@@ -3,6 +3,7 @@ variables:
   ENV: stg
   K8S_CLUSTER: ci-todo/app:minikube
   K8S_NAMESPACE: staging
+  DOMAIN: example.com
 
 
 stg:build:backend:
@@ -20,26 +21,26 @@ stg:build:frontend:
     - .build
 
 stg:deploy:
-  environment:
-    name: ${ENV}/${CI_COMMIT_REF_SLUG}
-    url: https://$CI_ENVIRONMENT_SLUG.example.com
-    on_stop: stg:destroy
-    deployment_tier: staging
-    auto_stop_in: 1 minutes
   extends: 
     - .stg-rules
     - .deploy
-  resource_group: ${ENV}/${CI_COMMIT_REF_SLUG}
-  # needs:
-  #   - stg:build:backend
-  #   - stg:build:frontend
+  environment:
+    name: ${K8S_NAMESPACE}
+    url: https://${CI_ENVIRONMENT_SLUG}.${DOMAIN}
+    on_stop: stg:destroy
+    deployment_tier: staging
+    auto_stop_in: 1 minutes
+  resource_group: ${K8S_NAMESPACE}
+  needs:
+    - stg:build:backend
+    - stg:build:frontend
 
 stg:destroy:
-  environment:
-    name: ${ENV}/${CI_COMMIT_REF_SLUG}
-    action: stop
   extends: 
     - .stg-destroy-rules
     - .destroy
+  environment:
+    name: ${K8S_NAMESPACE}
+    action: stop
   needs:
     - stg:deploy
