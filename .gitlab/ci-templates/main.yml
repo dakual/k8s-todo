@@ -86,9 +86,6 @@ stages:
     - sed -i -e "s|<IMAGE>|${CI_REGISTRY_IMAGE}/backend:${IMAGE_TAG}|g" backend.yml
     - kubectl create namespace ${K8S_NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -
     - kubectl apply -f . -n ${K8S_NAMESPACE}
-  environment:
-    name: ${ENV}
-    url: https://$CI_ENVIRONMENT_SLUG.example.com
   tags:
     - ${RUNNER}
 
@@ -101,6 +98,9 @@ stages:
     - cd k8s
     - kubectl delete -f . -n ${K8S_NAMESPACE}
     - kubectl delete namespace ${K8S_NAMESPACE}
+  environment:
+    name: ${ENV}/${CI_COMMIT_REF_SLUG}
+    action: stop
   tags:
     - ${RUNNER}
 

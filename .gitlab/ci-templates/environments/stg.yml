@@ -23,6 +23,12 @@ stg:deploy:
   extends: 
     - .stg-rules
     - .deploy
+  environment:
+    name: ${ENV}/${CI_COMMIT_REF_SLUG}
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
+    on_stop: dev:destroy
+    deployment_tier: staging
+    auto_stop_in: 2 minutes
   needs:
     - stg:build:backend
     - stg:build:frontend
