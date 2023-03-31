@@ -1,6 +1,7 @@
 variables:
   RUNNER: dev
   ENV: prd
+  ENV_LONG: production
   K8S_CLUSTER: ci-todo/app:minikube
   K8S_NAMESPACE: production
   DOMAIN: example.com
@@ -27,11 +28,10 @@ prd:deploy:
     - .prd-rules
     - .deploy
   environment:
-    name: ${K8S_NAMESPACE}
+    name: ${ENV_LONG}
     url: https://$CI_ENVIRONMENT_SLUG.${DOMAIN}
     on_stop: prd:destroy
-    deployment_tier: production
-  resource_group: ${K8S_NAMESPACE}
+  resource_group: ${ENV_LONG}
   needs:
     - prd:build:backend
     - prd:build:frontend
@@ -44,7 +44,6 @@ prd:release:
     - .release
   needs:
     - prd:deploy
-  when: manual
 
 
 prd:destroy:
@@ -52,7 +51,7 @@ prd:destroy:
     - .prd-destroy-rules
     - .destroy
   environment:
-    name: ${K8S_NAMESPACE}
+    name: ${ENV_LONG}
     action: stop
   needs:
     - prd:deploy

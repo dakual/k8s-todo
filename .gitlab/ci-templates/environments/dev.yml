@@ -1,8 +1,8 @@
 variables:
   RUNNER: dev
   ENV: dev
+  ENV_LONG: development
   K8S_CLUSTER: ci-todo/app:minikube
-  K8S_NAMESPACE: dev
   DOMAIN: ${ENV}-${CI_COMMIT_REF_SLUG}.example.com
 
 
@@ -25,12 +25,12 @@ dev:deploy:
     - .dev-rules
     - .deploy
   environment:
-    name: ${ENV}/${CI_COMMIT_REF_SLUG}
-    url: https://${ENV}-${CI_COMMIT_REF_SLUG:0:55}.${DOMAIN}
+    name: ${ENV_LONG}/${CI_COMMIT_REF_SLUG}
+    url: https://${ENV}-${CI_COMMIT_REF_SLUG}.${DOMAIN}
     on_stop: dev:destroy
     deployment_tier: development
     auto_stop_in: 5 minutes
-  resource_group: ${ENV}/${CI_COMMIT_REF_SLUG}
+  resource_group: ${ENV_LONG}/${CI_COMMIT_REF_SLUG}
   needs:
     - dev:build:backend
     - dev:build:frontend
@@ -40,7 +40,7 @@ dev:destroy:
     - .dev-destroy-rules
     - .destroy
   environment:
-    name: ${ENV}/${CI_COMMIT_REF_SLUG}
+    name: ${ENV_LONG}/${CI_COMMIT_REF_SLUG}
     action: stop
   needs:
     - dev:deploy

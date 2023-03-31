@@ -1,6 +1,7 @@
 variables:
   RUNNER: dev
   ENV: stg
+  ENV_LONG: staging
   K8S_CLUSTER: ci-todo/app:minikube
   K8S_NAMESPACE: staging
   DOMAIN: ${ENV}.example.com
@@ -25,10 +26,10 @@ stg:deploy:
     - .stg-rules
     - .deploy
   environment:
-    name: ${K8S_NAMESPACE}
+    name: ${ENV_LONG}
     url: https://${CI_ENVIRONMENT_SLUG}.${DOMAIN}
     on_stop: stg:destroy
-  resource_group: ${K8S_NAMESPACE}
+  resource_group: ${ENV_LONG}
   needs:
     - stg:build:backend
     - stg:build:frontend
@@ -38,7 +39,7 @@ stg:destroy:
     - .stg-destroy-rules
     - .destroy
   environment:
-    name: ${K8S_NAMESPACE}
+    name: ${ENV_LONG}
     action: stop
   needs:
     - stg:deploy
