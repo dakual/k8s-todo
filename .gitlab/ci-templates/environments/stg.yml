@@ -28,11 +28,11 @@ stg:deploy:
     url: https://$CI_ENVIRONMENT_SLUG.example.com
     on_stop: stg:destroy
     deployment_tier: staging
-    auto_stop_in: 3 minutes
+    auto_stop_in: 1 minutes
   resource_group: ${ENV}/${CI_COMMIT_REF_SLUG}
-  needs:
-    - stg:build:backend
-    - stg:build:frontend
+  # needs:
+  #   - stg:build:backend
+  #   - stg:build:frontend
 
 stg:destroy:
   extends: 
@@ -43,4 +43,6 @@ stg:destroy:
     action: stop
   needs:
     - stg:deploy
+  # rules:
+  #   - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG !~ /stable-.*/
   when: manual

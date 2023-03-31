@@ -44,6 +44,7 @@ stages:
 
 
 .build:
+  <<: &non-changes
   stage: build
   image: docker:latest
   variables:
