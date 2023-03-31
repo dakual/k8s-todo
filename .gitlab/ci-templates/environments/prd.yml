@@ -38,7 +38,7 @@ prd:release:
 
 prd:destroy:
   extends: 
-    - .prd-rules
+    - .prd-destroy-rules
     - .destroy
   needs:
     - prd:deploy

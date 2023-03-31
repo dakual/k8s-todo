@@ -29,9 +29,8 @@ dev:deploy:
 
 dev:destroy:
   extends: 
-    - .dev-rules
+    - .dev-destroy-rules
     - .destroy
   needs:
     - dev:deploy
-  when: manual
 
