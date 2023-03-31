@@ -26,7 +26,6 @@ stg:deploy:
   needs:
     - stg:build:backend
     - stg:build:frontend
-  when: manual
 
 stg:destroy:
   extends: 

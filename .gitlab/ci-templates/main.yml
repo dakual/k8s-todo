@@ -82,8 +82,8 @@ stages:
     - kubectl create namespace ${K8S_NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -
     # - sed -i "s/(image:).*$/1\${IMAGE}/g" frontend.yml
     # - sed -i "s/(image:).*$/1\${IMAGE}/g" backend.yml
-    - sed -i -e "s|<IMAGE>|${IMAGE}|g" frontend.yaml
-    - sed -i -e "s|<IMAGE>|${IMAGE}|g" backend.yaml
+    - sed -i -e "s|<IMAGE>|${IMAGE}|g" frontend.yml
+    - sed -i -e "s|<IMAGE>|${IMAGE}|g" backend.yml
     - kubectl apply -f . -n ${K8S_NAMESPACE}
   tags:
     - ${RUNNER}
