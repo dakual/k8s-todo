@@ -6,18 +6,18 @@ variables:
 
 
 dev:build:backend:
-  extends: 
-    - .dev-rules
-    - .build
   variables:
     APP: frontend
-
-dev:build:frontend:
   extends: 
     - .dev-rules
     - .build
+
+dev:build:frontend:
   variables:
     APP: backend
+  extends: 
+    - .dev-rules
+    - .build
 
 dev:deploy:
   extends: 
@@ -26,7 +26,6 @@ dev:deploy:
   needs:
     - dev:build:backend
     - dev:build:frontend
-  # when: manual
 
 dev:destroy:
   extends: 

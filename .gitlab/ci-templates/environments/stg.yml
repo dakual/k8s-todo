@@ -6,18 +6,18 @@ variables:
 
 
 stg:build:backend:
-  extends: 
-    - .stg-rules
-    - .build
   variables:
     APP: frontend
-
-stg:build:frontend:
   extends: 
     - .stg-rules
     - .build
+
+stg:build:frontend:
   variables:
     APP: backend
+  extends: 
+    - .stg-rules
+    - .build
 
 stg:deploy:
   extends: 

@@ -6,18 +6,18 @@ variables:
 
 
 prd:build:backend:
-  extends: 
-    - .prd-rules
-    - .build
   variables:
     APP: frontend
-
-prd:build:frontend:
   extends: 
     - .prd-rules
     - .build
+
+prd:build:frontend:
   variables:
     APP: backend
+  extends: 
+    - .prd-rules
+    - .build
 
 prd:deploy:
   extends: 

@@ -16,9 +16,7 @@ workflow:
     - if: '$CI_COMMIT_TAG =~ /release-v.*/'
     - if: '$CI_PIPELINE_SOURCE == "web"'
 
-variables:
-  IMAGE_TAG: ${ENV}-${CI_COMMIT_REF_SLUG}
-  IMAGE: ${CI_REGISTRY_IMAGE}/${APP}:${IMAGE_TAG}
+
 
 stages:
   - build
@@ -48,6 +46,9 @@ stages:
 .build:
   stage: build
   image: docker:latest
+  variables:
+    IMAGE_TAG: ${ENV}-${CI_COMMIT_REF_SLUG}
+    IMAGE: ${CI_REGISTRY_IMAGE}/${APP}:${IMAGE_TAG}
   services:
     - docker:dind
   before_script:
@@ -64,6 +65,8 @@ stages:
   image:
     name: bitnami/kubectl:latest
     entrypoint: ['']
+  variables:
+    IMAGE_TAG: ${ENV}-${CI_COMMIT_REF_SLUG}
   before_script: 
     - kubectl config get-contexts
     - kubectl config use-context ${K8S_CLUSTER}
@@ -79,11 +82,9 @@ stages:
   stage: deploy
   script:
     - cd k8s
+    - sed -i -e "s|<IMAGE>|${CI_REGISTRY_IMAGE}/frontend:${IMAGE_TAG}|g" frontend.yml
+    - sed -i -e "s|<IMAGE>|${CI_REGISTRY_IMAGE}/backend:${IMAGE_TAG}|g" backend.yml
     - kubectl create namespace ${K8S_NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -
-    # - sed -i "s/(image:).*$/1\${IMAGE}/g" frontend.yml
-    # - sed -i "s/(image:).*$/1\${IMAGE}/g" backend.yml
-    - sed -i -e "s|<IMAGE>|${IMAGE}|g" frontend.yml
-    - sed -i -e "s|<IMAGE>|${IMAGE}|g" backend.yml
     - kubectl apply -f . -n ${K8S_NAMESPACE}
   tags:
     - ${RUNNER}
