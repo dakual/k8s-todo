@@ -28,7 +28,6 @@ stg:deploy:
     name: ${K8S_NAMESPACE}
     url: https://${CI_ENVIRONMENT_SLUG}.${DOMAIN}
     on_stop: stg:destroy
-    deployment_tier: staging
   resource_group: ${K8S_NAMESPACE}
   needs:
     - stg:build:backend
