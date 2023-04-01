@@ -9,7 +9,7 @@ deployments:
       DB_PASSWORD: "root"
       DB_NAME: "todo"
       DB_PORT: "3306"
-      CLIENT_ORIGIN: "http://example.com"
+      CLIENT_ORIGIN: "http://localhost.com"
       NODE_PORT: "3000"
     image:
       repository: registry.gitlab.com/ci-todo/app/backend
