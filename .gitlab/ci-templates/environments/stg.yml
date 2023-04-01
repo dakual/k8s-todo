@@ -9,6 +9,7 @@ variables:
 stg:build:backend:
   variables:
     APP: frontend
+    BUILD_ARGS: '--build-arg REACT_APP_BACKEND_URL=http://api.${DOMAIN}/api'
   extends: 
     - .stg-rules
     - .build
