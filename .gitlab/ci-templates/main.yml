@@ -118,9 +118,9 @@ stages:
     - chmod 600 $KUBECONFIG
     - helm plugin install --version=v0.10.3 https://github.com/chartmuseum/helm-push.git
     - |
-      helm repo add ${PROJECT}
-      --username ${CI_REGISTRY_USER}
-      --password ${CI_REGISTRY_PASSWORD}
+      helm repo add ${PROJECT} \
+      --username ${CI_REGISTRY_USER} \
+      --password ${CI_REGISTRY_PASSWORD} \
       ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
     - |
       if [ "${ENV}" == "dev" ]; then
