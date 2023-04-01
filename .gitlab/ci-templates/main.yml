@@ -22,6 +22,7 @@ workflow:
 
 stages:
   - build
+  - package
   - deploy
   - release
   - destroy
@@ -100,8 +101,23 @@ stages:
     - curl -LO https://dl.k8s.io/release/v1.26.0/bin/linux/arm64/kubectl
     - chmod +x kubectl && mv kubectl /usr/bin/kubectl
     - kubectl config get-contexts
-    - kubectl config use-context ${K8S_CLUSTER}
+    - kubectl config use-context ${AGENT}
     - cd ./helm
+
+
+.helm-package:
+  extends:
+    - .deploy-configure
+  stage: package
+  script:
+    - helm package .
+    - helm cm-push . ${PROJECT}
+  tags: 
+    - ${RUNNER}
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - charts/${PROJECT}/${PROJECT}*.tgz
 
 
 .deploy:

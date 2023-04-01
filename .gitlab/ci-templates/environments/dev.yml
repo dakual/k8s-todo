@@ -2,7 +2,7 @@ variables:
   RUNNER: dev
   ENV: dev
   ENV_LONG: development
-  K8S_CLUSTER: ci-todo/app:minikube
+  AGENT: ci-todo/app:minikube
   DOMAIN: ${ENV}-${CI_COMMIT_REF_SLUG}.example.com
 
 

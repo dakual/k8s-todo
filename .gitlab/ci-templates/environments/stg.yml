@@ -2,7 +2,7 @@ variables:
   RUNNER: dev
   ENV: stg
   ENV_LONG: staging
-  K8S_CLUSTER: ci-todo/app:minikube
+  AGENT: ci-todo/app:minikube
   DOMAIN: ${ENV}.example.com
 
 

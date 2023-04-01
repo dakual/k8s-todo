@@ -2,7 +2,7 @@ variables:
   RUNNER: dev
   ENV: prd
   ENV_LONG: production
-  K8S_CLUSTER: ci-todo/app:minikube
+  AGENT: ci-todo/app:minikube
   DOMAIN: example.com
 
 
@@ -20,6 +20,14 @@ prd:build:frontend:
     - .prd-rules
     - .build
 
+prd:package:
+  extends: 
+    - .prd-rules
+    - .helm-package
+  needs:
+    - prd:build:backend
+    - prd:build:frontend
+
 prd:deploy:
   extends: 
     - .prd-rules
@@ -30,8 +38,7 @@ prd:deploy:
     on_stop: prd:destroy
   resource_group: ${ENV_LONG}
   needs:
-    - prd:build:backend
-    - prd:build:frontend
+    - prd:package
   when: manual
 
 prd:release:
