@@ -30,7 +30,7 @@ services:
       - DB_NAME=$MYSQLDB_DATABASE
       - DB_PORT=$MYSQLDB_DOCKER_PORT
     ports:
-      - $BACKEND_LOCAL_PORT:$BACKEND_NODE_PORT
+      - $BACKEND_LOCAL_PORT:$NODE_PORT
     depends_on:
       mysqldb:
         condition: service_healthy

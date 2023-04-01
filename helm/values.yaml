@@ -9,8 +9,8 @@ deployments:
       DB_PASSWORD: "root"
       DB_NAME: "todo"
       DB_PORT: "3306"
-      BACKEND_CLIENT_ORIGIN: "http://example.com"
-      BACKEND_NODE_PORT: "3000"
+      CLIENT_ORIGIN: "http://example.com"
+      NODE_PORT: "3000"
     image:
       repository: registry.gitlab.com/ci-todo/app/backend
       tag: prd-release-v1-3
