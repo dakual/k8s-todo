@@ -29,9 +29,9 @@ stg:deploy:
     url: https://${DOMAIN}
     on_stop: stg:destroy
   resource_group: ${ENV_LONG}
-  # needs:
-  #   - stg:build:backend
-  #   - stg:build:frontend
+  needs:
+    - stg:build:backend
+    - stg:build:frontend
 
 stg:destroy:
   extends: 

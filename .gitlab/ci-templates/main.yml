@@ -69,13 +69,14 @@ stages:
     - cd app/${APP}
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
+    - export REACT_APP_BACKEND_URL=http://dakual.com
     - docker build --tag ${REPOSITORY}:${IMAGE_TAG} .
     - docker push ${REPOSITORY}:${IMAGE_TAG}
   tags:
     - ${RUNNER}
-  rules:
-    - changes: 
-        - app/**/*
+  # rules:
+  #   - changes: 
+  #       - app/**/*
 
 
 .deploy-configure:
