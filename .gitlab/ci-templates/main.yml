@@ -117,11 +117,17 @@ stages:
   before_script: 
     - chmod 600 $KUBECONFIG
     - helm plugin install --version=v0.10.3 https://github.com/chartmuseum/helm-push.git
-    - >
+    - |
       helm repo add ${PROJECT}
       --username ${CI_REGISTRY_USER}
       --password ${CI_REGISTRY_PASSWORD}
       ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
+    - |
+      if [ "${ENV}" == "dev" ]; then
+        export K8S_NAMESPACE=${ENV}-${CI_COMMIT_REF_SLUG:0:59}
+      else
+        export K8S_NAMESPACE=${ENV_LONG}
+      fi
     - curl -LO https://dl.k8s.io/release/v1.26.0/bin/linux/arm64/kubectl
     - chmod +x kubectl && mv kubectl /usr/bin/kubectl
     - kubectl config get-contexts
