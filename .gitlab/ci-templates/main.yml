@@ -1,6 +1,5 @@
 variables:
   PROJECT: todo
-  CHART: todo
 
 include:
   - local: '.gitlab/ci-templates/environments/dev.yml'
@@ -77,36 +76,6 @@ stages:
     - changes: 
         - app/**/*
 
-# .deploy-configure:
-#   image:
-#     name: bitnami/kubectl:latest
-#     entrypoint: ['']
-#   variables:
-#     IMAGE_TAG: ${ENV}-${CI_COMMIT_REF_SLUG}
-#   before_script: 
-#     - kubectl config get-contexts
-#     - kubectl config use-context ${K8S_CLUSTER}
-#     - |
-#       if [ "${ENV}" == "dev" ]; then
-#         export K8S_NAMESPACE=${ENV}-${CI_COMMIT_REF_SLUG:0:59}
-#       else
-#         export K8S_NAMESPACE=${ENV_LONG}
-#       fi
-
-
-# .deploy:
-#   extends:
-#     - .deploy-configure
-#   stage: deploy
-#   script:
-#     - cd k8s
-#     - sed -i -e "s|<IMAGE>|${CI_REGISTRY_IMAGE}/frontend:${IMAGE_TAG}|g" frontend.yml
-#     - sed -i -e "s|<IMAGE>|${CI_REGISTRY_IMAGE}/backend:${IMAGE_TAG}|g" backend.yml
-#     - sed -i -e "s|<DOMAIN>|${DOMAIN}|g" ingress.yml
-#     - kubectl create namespace ${K8S_NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -
-#     - kubectl apply -f . -n ${K8S_NAMESPACE}
-#   tags:
-#     - ${RUNNER}
 
 .deploy-configure:
   image:
@@ -124,9 +93,9 @@ stages:
       ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
     - |
       if [ "${ENV}" == "dev" ]; then
-        export K8S_NAMESPACE=${ENV}-${CI_COMMIT_REF_SLUG:0:59}
+        export NAMESPACE=${ENV}-${CI_COMMIT_REF_SLUG:0:59}
       else
-        export K8S_NAMESPACE=${ENV_LONG}
+        export NAMESPACE=${ENV_LONG}
       fi
     - curl -LO https://dl.k8s.io/release/v1.26.0/bin/linux/arm64/kubectl
     - chmod +x kubectl && mv kubectl /usr/bin/kubectl
@@ -145,9 +114,9 @@ stages:
       helm upgrade \
         --atomic \
         --timeout 5m \
-        --install ${CHART} . \
+        --install ${PROJECT} . \
         --reset-values \
-        --namespace ${K8S_NAMESPACE} \
+        --namespace ${NAMESPACE} \
         --create-namespace \
         --set deployments.backend.image.repository=${CI_REGISTRY_IMAGE}/backend  \
         --set deployments.backend.image.tag=${IMAGE_TAG}  \
@@ -175,24 +144,12 @@ stages:
     - ${RUNNER}
 
 
-# .destroy:
-#   extends:
-#     - .deploy-configure
-#   stage: destroy
-#   script:
-#     - cd k8s
-#     - kubectl delete -f . -n ${K8S_NAMESPACE}
-#     - kubectl delete namespace ${K8S_NAMESPACE}
-#   tags:
-#     - ${RUNNER}
-
-
 .destroy:
   extends:
     - .deploy-configure
   stage: destroy
   script:
-    - helm uninstall ${CHART}
-    - kubectl delete namespace ${K8S_NAMESPACE}
+    - helm uninstall ${PROJECT} --namespace ${NAMESPACE}
+    - kubectl delete namespace ${NAMESPACE}
   tags:
     - ${RUNNER}

@@ -3,9 +3,7 @@ variables:
   ENV: stg
   ENV_LONG: staging
   K8S_CLUSTER: ci-todo/app:minikube
-  K8S_NAMESPACE: staging
   DOMAIN: ${ENV}.example.com
-
 
 
 stg:build:backend:
@@ -15,14 +13,12 @@ stg:build:backend:
     - .stg-rules
     - .build
 
-
 stg:build:frontend:
   variables:
     APP: backend
   extends: 
     - .stg-rules
     - .build
-
 
 stg:deploy:
   extends: 
@@ -36,7 +32,6 @@ stg:deploy:
   # needs:
   #   - stg:build:backend
   #   - stg:build:frontend
-
 
 stg:destroy:
   extends: 

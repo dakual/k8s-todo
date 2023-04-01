@@ -3,7 +3,6 @@ variables:
   ENV: prd
   ENV_LONG: production
   K8S_CLUSTER: ci-todo/app:minikube
-  K8S_NAMESPACE: production
   DOMAIN: example.com
 
 
@@ -14,14 +13,12 @@ prd:build:backend:
     - .prd-rules
     - .build
 
-
 prd:build:frontend:
   variables:
     APP: backend
   extends: 
     - .prd-rules
     - .build
-
 
 prd:deploy:
   extends: 
@@ -36,7 +33,6 @@ prd:deploy:
     - prd:build:backend
     - prd:build:frontend
   when: manual
-
 
 prd:release:
   extends: 
