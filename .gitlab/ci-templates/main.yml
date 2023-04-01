@@ -134,7 +134,7 @@ stages:
         --set deployments.backend.image.repository=${CI_REGISTRY_IMAGE}/backend  \
         --set deployments.backend.image.tag=${IMAGE_TAG}  \
         --set deployments.backend.ingress.host=api.${DOMAIN} \
-        --set deployments.backend.env.CLIENT_ORIGIN=${DOMAIN} \
+        --set deployments.backend.env.CLIENT_ORIGIN=http://${DOMAIN} \
         --set deployments.frontend.image.repository=${CI_REGISTRY_IMAGE}/frontend  \
         --set deployments.frontend.image.tag=${IMAGE_TAG}  \
         --set deployments.frontend.ingress.host=${DOMAIN}
