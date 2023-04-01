@@ -61,16 +61,16 @@ stages:
   stage: build
   image: docker:latest
   variables:
+    REPOSITORY: ${CI_REGISTRY_IMAGE}/${APP}
     IMAGE_TAG: ${ENV}-${CI_COMMIT_REF_SLUG}
-    IMAGE: ${CI_REGISTRY_IMAGE}/${APP}:${IMAGE_TAG}
   services:
     - docker:dind
   before_script:
     - cd app/${APP}
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - docker build --tag ${IMAGE} .
-    - docker push ${IMAGE}
+    - docker build --tag ${REPOSITORY}:${IMAGE_TAG} .
+    - docker push ${REPOSITORY}:${IMAGE_TAG}
   tags:
     - ${RUNNER}
   rules:
@@ -113,6 +113,7 @@ stages:
     name: alpine/helm:3.10.2
     entrypoint: [""]
   variables:
+    REPOSITORY: ${CI_REGISTRY_IMAGE}/${APP}
     IMAGE_TAG: ${ENV}-${CI_COMMIT_REF_SLUG}
   before_script: 
     - chmod 600 $KUBECONFIG
@@ -134,8 +135,21 @@ stages:
     - .deploy-configure
   stage: deploy
   script:
-    - helm dependency update .
-    - helm upgrade --install ${CHART} . --wait
+    - |
+      helm dependency update .
+      helm upgrade \
+        --atomic \
+        --timeout 5m \
+        --install ${CHART} . \
+        --reset-values \
+        --namespace ${K8S_NAMESPACE} \
+        --create-namespace \
+        --set deployments.backend.image.repository=${REPOSITORY}  \
+        --set deployments.backend.image.tag=${IMAGE_TAG}  \
+        --set deployments.backend.ingress.host=api.${DOMAIN}  \
+        --set deployments.frontend.image.repository=${REPOSITORY}  \
+        --set deployments.frontend.image.tag=${IMAGE_TAG}  \
+        --set deployments.frontend.ingress.host=${DOMAIN}  \
   tags:
     - ${RUNNER}
 
@@ -173,7 +187,6 @@ stages:
     - .deploy-configure
   stage: destroy
   script:
-    - cd k8s
     - helm uninstall ${CHART}
     - kubectl delete namespace ${K8S_NAMESPACE}
   tags:
