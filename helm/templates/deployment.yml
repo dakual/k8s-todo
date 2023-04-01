@@ -1,0 +1,59 @@
+{{- range $key, $value := .Values.deployments }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $key }}
+  {{- with $value.labels }}
+  labels:
+      {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ $value.replicas }}
+  selector:
+    matchLabels:
+      app: {{ $key }}
+  template:
+    metadata:
+      labels:
+        app: {{ $key }}
+    spec:
+      {{- range $k, $v := $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ $k }}
+      {{- end }}
+      containers:
+        - name: {{ $key }}
+          {{- with $value.env }}
+          env:
+          {{- range $x, $y := $value.env }}
+            - name: {{ $x }}
+              value: {{ $y | quote }}
+          {{- end }}
+          {{- end }}
+          image: {{ $value.image.repository }}:{{ $value.image.tag }}
+          imagePullPolicy: {{ $value.image.imagePullPolicy }}
+          {{- with $value.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $value.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ $value.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: {{ $value.healthCheckPath }}
+              port: http
+            {{- with $value.initialDelaySeconds }}
+            initialDelaySeconds: {{ . }}
+            {{- end }}
+          readinessProbe:
+            httpGet:
+              path: {{ $value.healthCheckPath }}
+              port: http
+{{- end }}

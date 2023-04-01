@@ -1,0 +1,20 @@
+{{- range $key, $value := .Values.deployments }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $key }}
+  {{- with $value.labels }}
+  labels:
+      {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ $value.service.type }}
+  ports:
+    - port: {{ $value.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ $key }}
+{{- end }}

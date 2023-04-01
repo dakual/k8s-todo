@@ -1,3 +1,7 @@
+variables:
+  PROJECT: todo
+  CHART: todo
+
 include:
   - local: '.gitlab/ci-templates/environments/dev.yml'
     rules:
@@ -15,7 +19,6 @@ workflow:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
     - if: '$CI_COMMIT_TAG =~ /release-v.*/'
     - if: '$CI_PIPELINE_SOURCE == "web"'
-
 
 
 stages:
@@ -70,25 +73,60 @@ stages:
     - docker push ${IMAGE}
   tags:
     - ${RUNNER}
-  # rules:
-  #   - changes: 
-  #       - app/**/*
+  rules:
+    - changes: 
+        - app/**/*
+
+# .deploy-configure:
+#   image:
+#     name: bitnami/kubectl:latest
+#     entrypoint: ['']
+#   variables:
+#     IMAGE_TAG: ${ENV}-${CI_COMMIT_REF_SLUG}
+#   before_script: 
+#     - kubectl config get-contexts
+#     - kubectl config use-context ${K8S_CLUSTER}
+#     - |
+#       if [ "${ENV}" == "dev" ]; then
+#         export K8S_NAMESPACE=${ENV}-${CI_COMMIT_REF_SLUG:0:59}
+#       else
+#         export K8S_NAMESPACE=${ENV_LONG}
+#       fi
+
+
+# .deploy:
+#   extends:
+#     - .deploy-configure
+#   stage: deploy
+#   script:
+#     - cd k8s
+#     - sed -i -e "s|<IMAGE>|${CI_REGISTRY_IMAGE}/frontend:${IMAGE_TAG}|g" frontend.yml
+#     - sed -i -e "s|<IMAGE>|${CI_REGISTRY_IMAGE}/backend:${IMAGE_TAG}|g" backend.yml
+#     - sed -i -e "s|<DOMAIN>|${DOMAIN}|g" ingress.yml
+#     - kubectl create namespace ${K8S_NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -
+#     - kubectl apply -f . -n ${K8S_NAMESPACE}
+#   tags:
+#     - ${RUNNER}
 
 .deploy-configure:
   image:
-    name: bitnami/kubectl:latest
-    entrypoint: ['']
+    name: alpine/helm:3.10.2
+    entrypoint: [""]
   variables:
     IMAGE_TAG: ${ENV}-${CI_COMMIT_REF_SLUG}
   before_script: 
+    - chmod 600 $KUBECONFIG
+    - helm plugin install --version=v0.10.3 https://github.com/chartmuseum/helm-push.git
+    - >
+      helm repo add ${PROJECT}
+      --username ${CI_REGISTRY_USER}
+      --password ${CI_REGISTRY_PASSWORD}
+      ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
+    - curl -LO https://dl.k8s.io/release/v1.26.0/bin/linux/arm64/kubectl
+    - chmod +x kubectl && mv kubectl /usr/bin/kubectl
     - kubectl config get-contexts
     - kubectl config use-context ${K8S_CLUSTER}
-    - |
-      if [ "${ENV}" == "dev" ]; then
-        export K8S_NAMESPACE=${ENV}-${CI_COMMIT_REF_SLUG:0:59}
-      else
-        export K8S_NAMESPACE=${ENV_LONG}
-      fi
+    - cd ./helm
 
 
 .deploy:
@@ -96,12 +134,8 @@ stages:
     - .deploy-configure
   stage: deploy
   script:
-    - cd k8s
-    - sed -i -e "s|<IMAGE>|${CI_REGISTRY_IMAGE}/frontend:${IMAGE_TAG}|g" frontend.yml
-    - sed -i -e "s|<IMAGE>|${CI_REGISTRY_IMAGE}/backend:${IMAGE_TAG}|g" backend.yml
-    - sed -i -e "s|<DOMAIN>|${DOMAIN}|g" ingress.yml
-    - kubectl create namespace ${K8S_NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -
-    - kubectl apply -f . -n ${K8S_NAMESPACE}
+    - helm dependency update .
+    - helm upgrade --install ${CHART} . --wait
   tags:
     - ${RUNNER}
 
@@ -122,13 +156,25 @@ stages:
     - ${RUNNER}
 
 
+# .destroy:
+#   extends:
+#     - .deploy-configure
+#   stage: destroy
+#   script:
+#     - cd k8s
+#     - kubectl delete -f . -n ${K8S_NAMESPACE}
+#     - kubectl delete namespace ${K8S_NAMESPACE}
+#   tags:
+#     - ${RUNNER}
+
+
 .destroy:
   extends:
     - .deploy-configure
   stage: destroy
   script:
     - cd k8s
-    - kubectl delete -f . -n ${K8S_NAMESPACE}
+    - helm uninstall ${CHART}
     - kubectl delete namespace ${K8S_NAMESPACE}
   tags:
     - ${RUNNER}

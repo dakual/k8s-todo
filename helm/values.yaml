@@ -1,0 +1,60 @@
+deployments:
+  backend:
+    labels:
+      env: deneme
+    replicas: 1
+    env:
+      DB_HOST: "host.minikube.internal"
+      DB_USER: "root"
+      DB_PASSWORD: "root"
+      DB_NAME: "todo"
+      DB_PORT: "3306"
+      BACKEND_CLIENT_ORIGIN: "http://example.com"
+      BACKEND_NODE_PORT: "3000"
+    image:
+      repository: registry.gitlab.com/ci-todo/app/backend
+      tag: prd-release-v1-3
+      imagePullPolicy: Always
+    command:
+    args:
+    port: 3000
+    healthCheckPath: /
+    initialDelaySeconds: 15
+    service:
+      type: ClusterIP
+      port: 3000
+    ingress:
+      className: nginx
+      host: api.example.com
+      port: 3000
+      annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /
+        nginx.ingress.kubernetes.io/ssl-redirect: "false"
+
+  frontend:
+    labels:
+      env: deneme
+    replicas: 1
+    env:
+    image:
+      repository: registry.gitlab.com/ci-todo/app/frontend
+      tag: prd-release-v1-3
+      imagePullPolicy: Always
+    command:
+    args:
+    port: 80
+    healthCheckPath: /
+    initialDelaySeconds: 15
+    service:
+      type: ClusterIP
+      port: 80
+    ingress:
+      className: nginx
+      host: example.com
+      port: 80
+      annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /
+        nginx.ingress.kubernetes.io/ssl-redirect: "false"
+
+imagePullSecrets:
+  registry-credentials: eyJhdXRocyI6eyJyZWdpc3RyeS5naXRsYWIuY29tIjp7InVzZXJuYW1lIjoibWluaWt1YmUtcmVnaXN0cnkiLCJwYXNzd29yZCI6ImdscGF0LW5NV0VjTUFLaE1nQXZEdm5nV3lZIiwiYXV0aCI6ImJXbHVhV3QxWW1VdGNtVm5hWE4wY25rNloyeHdZWFF0YmsxWFJXTk5RVXRvVFdkQmRrUjJibWRYZVZrPSJ9fX0=
