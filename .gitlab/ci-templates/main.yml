@@ -113,7 +113,6 @@ stages:
     name: alpine/helm:3.10.2
     entrypoint: [""]
   variables:
-    REPOSITORY: ${CI_REGISTRY_IMAGE}/${APP}
     IMAGE_TAG: ${ENV}-${CI_COMMIT_REF_SLUG}
   before_script: 
     - chmod 600 $KUBECONFIG
@@ -144,10 +143,10 @@ stages:
         --reset-values \
         --namespace ${K8S_NAMESPACE} \
         --create-namespace \
-        --set deployments.backend.image.repository=${REPOSITORY}  \
+        --set deployments.backend.image.repository=${CI_REGISTRY_IMAGE}/backend  \
         --set deployments.backend.image.tag=${IMAGE_TAG}  \
         --set deployments.backend.ingress.host=api.${DOMAIN}  \
-        --set deployments.frontend.image.repository=${REPOSITORY}  \
+        --set deployments.frontend.image.repository=${CI_REGISTRY_IMAGE}/frontend  \
         --set deployments.frontend.image.tag=${IMAGE_TAG}  \
         --set deployments.frontend.ingress.host=${DOMAIN}  \
   tags:
