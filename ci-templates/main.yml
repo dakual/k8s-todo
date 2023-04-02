@@ -156,10 +156,11 @@ stages:
   #     alias: db
   before_script:
     - apk add --update mysql-dev mysql-client
-    - mysql --version
-    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" ${MYSQL_DATABASE}
   script:
-    - echo "SHOW tables;"
+    - mysql --version
+    - >
+      mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" ${MYSQL_DATABASE}
+      echo "SHOW tables;"
   tags:
     - ${RUNNER}
 
