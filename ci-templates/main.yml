@@ -155,7 +155,7 @@ stages:
   #   - name: arm64v8/mysql:8.0
   #     alias: db
   before_script:
-    - apk add --update mysql-client
+    - apk add --update mysql-dev mysql-client
     - mysql --version
     - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" ${MYSQL_DATABASE}
   script:
