@@ -157,7 +157,7 @@ stages:
   before_script:
     - apk add --update mysql-client
     - mysql --version
-    - mysql -u ${MYSQL_USER} -p ${MYSQL_PASSWORD} -h ${MYSQL_HOST}:${MYSQL_PORT} ${MYSQL_DATABASE}
+    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}:${MYSQL_PORT}" ${MYSQL_DATABASE}
   script:
     - echo "SHOW tables;"
   tags:
