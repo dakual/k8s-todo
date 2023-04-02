@@ -146,7 +146,7 @@ stages:
   stage: database
   image: docker:latest
   variables:
-    MYSQL_HOST: host.minikube.internal
+    MYSQL_HOST: mysqldb
     MYSQL_PORT: 3306
     MYSQL_USER: root
     MYSQL_PASSWORD: root
