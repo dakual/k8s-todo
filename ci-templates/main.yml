@@ -158,7 +158,7 @@ stages:
     - apk add --update mysql-dev mysql-client
   script:
     - mysql --version
-    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" < "scripts/create-db.sql"
+    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" -E < "scripts/create-db.sql"
   tags:
     - ${RUNNER}
 
