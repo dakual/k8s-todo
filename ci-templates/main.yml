@@ -146,11 +146,10 @@ stages:
   stage: database
   image: docker:latest
   variables:
-    MYSQL_HOST: host.minikube.internal
-    MYSQL_ROOT_PASSWORD: 3306
-    MYSQL_DATABASE: todo
+    MYSQL_ROOT_PASSWORD: "123456"
+    MYSQL_DATABASE: "todo"
   services:
-    - mysql:5.7
+    - arm64v8/mysql:8.0
   before_script:
     - mysql --version
     - echo "SHOW databases;"
