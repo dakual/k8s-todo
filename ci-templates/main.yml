@@ -142,7 +142,7 @@ stages:
     - ${RUNNER}
 
 
-database-configure:
+.database-configure:
   stage: database
   image: docker:latest
   variables:
