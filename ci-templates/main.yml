@@ -142,7 +142,7 @@ stages:
     - ${RUNNER}
 
 
-.database-configure:
+.init-db:
   stage: database
   image: docker:latest
   variables:
@@ -155,9 +155,7 @@ stages:
     - apk add --update mysql-dev mysql-client
     - mysql --version
   script:
-    - |
-      echo "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE} DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;" |
-      mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}"
+    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" --execute="CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE}"
     - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" ${MYSQL_DATABASE} < "scripts/init-db.sql"
   tags:
     - ${RUNNER}
