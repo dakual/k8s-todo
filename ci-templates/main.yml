@@ -150,17 +150,15 @@ stages:
     MYSQL_PORT: 3306
     MYSQL_USER: root
     MYSQL_PASSWORD: root
-  # services:
-  #   - name: arm64v8/mysql:8.0
-  #     alias: db
+    MYSQL_DATABASE: test
   before_script:
     - apk add --update mysql-dev mysql-client
-  script:
     - mysql --version
-    # - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" -E < "scripts/create-db.sql"
+  script:
     - |
-      echo "CREATE DATABASE IF NOT EXISTS stg DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;" |
+      echo "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE} DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;" |
       mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}"
+    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" ${MYSQL_DATABASE} < "scripts/init-db.sql"
   tags:
     - ${RUNNER}
 
