@@ -160,7 +160,7 @@ stages:
     - mysql --version
     # - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" -E < "scripts/create-db.sql"
     - |
-      echo "CREATE DATABASE IF NOT EXISTS `stg` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;" |
+      echo "CREATE DATABASE IF NOT EXISTS stg DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;" |
       mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}"
   tags:
     - ${RUNNER}
