@@ -150,7 +150,6 @@ stages:
     MYSQL_PORT: 3306
     MYSQL_USER: root
     MYSQL_PASSWORD: root
-    MYSQL_DATABASE: todo
   # services:
   #   - name: arm64v8/mysql:8.0
   #     alias: db
@@ -161,7 +160,7 @@ stages:
     # - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" -E < "scripts/create-db.sql"
     - |
       echo "CREATE DATABASE IF NOT EXISTS stg DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;" |
-      mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}"
+      mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}"
   tags:
     - ${RUNNER}
 
