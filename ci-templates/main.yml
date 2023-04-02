@@ -24,6 +24,7 @@ stages:
   - build
   - package
   - deploy
+  - database
   - release
   - destroy
 
@@ -137,6 +138,26 @@ stages:
         --set deployments.frontend.image.repository=${CI_REGISTRY_IMAGE}/frontend  \
         --set deployments.frontend.image.tag=${IMAGE_TAG}  \
         --set deployments.frontend.ingress.host=${DOMAIN}
+  tags:
+    - ${RUNNER}
+
+
+.database-configure:
+  stage: database
+  image: docker:latest
+  variables:
+    MYSQL_HOST: host.minikube.internal
+    MYSQL_PORT: 3306
+    MYSQL_USER: root
+    MYSQL_PASSWORD: root
+    MYSQL_DATABASE: todo
+  services:
+    - arm64v8/mysql:8.0
+  before_script:
+    - mysql --version
+    - mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -h "${MYSQL_HOST}" "${MYSQL_DATABASE}"
+  script:
+    - echo "SHOW tables;"
   tags:
     - ${RUNNER}
 

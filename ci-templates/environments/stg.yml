@@ -5,41 +5,44 @@ variables:
   AGENT: ci-todo/app:minikube
   DOMAIN: ${ENV}.example.com
 
+database:
+  extends:
+    - .database-configure
 
-stg:build:backend:
-  variables:
-    APP: frontend
-    BUILD_ARGS: '--build-arg REACT_APP_BACKEND_URL=http://api.${DOMAIN}/api'
-  extends: 
-    - .stg-rules
-    - .build
+# stg:build:backend:
+#   variables:
+#     APP: frontend
+#     BUILD_ARGS: '--build-arg REACT_APP_BACKEND_URL=http://api.${DOMAIN}/api'
+#   extends: 
+#     - .stg-rules
+#     - .build
 
-stg:build:frontend:
-  variables:
-    APP: backend
-  extends: 
-    - .stg-rules
-    - .build
+# stg:build:frontend:
+#   variables:
+#     APP: backend
+#   extends: 
+#     - .stg-rules
+#     - .build
 
-stg:deploy:
-  extends: 
-    - .stg-rules
-    - .deploy
-  environment:
-    name: ${ENV_LONG}
-    url: https://${DOMAIN}
-    on_stop: stg:destroy
-  resource_group: ${ENV_LONG}
-  needs:
-    - stg:build:backend
-    - stg:build:frontend
+# stg:deploy:
+#   extends: 
+#     - .stg-rules
+#     - .deploy
+#   environment:
+#     name: ${ENV_LONG}
+#     url: https://${DOMAIN}
+#     on_stop: stg:destroy
+#   resource_group: ${ENV_LONG}
+#   needs:
+#     - stg:build:backend
+#     - stg:build:frontend
 
-stg:destroy:
-  extends: 
-    - .stg-destroy-rules
-    - .destroy
-  environment:
-    name: ${ENV_LONG}
-    action: stop
-  needs:
-    - stg:deploy
+# stg:destroy:
+#   extends: 
+#     - .stg-destroy-rules
+#     - .destroy
+#   environment:
+#     name: ${ENV_LONG}
+#     action: stop
+#   needs:
+#     - stg:deploy
