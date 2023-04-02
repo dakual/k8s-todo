@@ -144,7 +144,7 @@ stages:
 
 .database-configure:
   stage: database
-  image: docker:latest
+  image: python:latest
   variables:
     MYSQL_HOST: host.minikube.internal
     MYSQL_ROOT_PASSWORD: 3306
