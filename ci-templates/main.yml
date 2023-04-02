@@ -141,9 +141,7 @@ stages:
   tags:
     - ${RUNNER}
 
-services:
-  - arm64v8/mysql:8.0
-  
+
 .database-configure:
   stage: database
   image: docker:latest
@@ -151,7 +149,8 @@ services:
     MYSQL_HOST: host.minikube.internal
     MYSQL_ROOT_PASSWORD: 3306
     MYSQL_DATABASE: todo
-
+  services:
+    - mysql:5.7
   before_script:
     - mysql --version
     - echo "SHOW databases;"
