@@ -150,11 +150,10 @@ stages:
     MYSQL_DATABASE: "todo"
   services:
     - mariadb
-  before_script:
+  script:
     - mysql --version
     - echo "SHOW databases;"
     - mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -h "${MYSQL_HOST}" "${MYSQL_DATABASE}"
-  script:
     - echo "SHOW tables;"
   tags:
     - ${RUNNER}
