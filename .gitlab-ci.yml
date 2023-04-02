@@ -1,4 +1,4 @@
 include:
-  - project: "ci-todo/ci-template"
+  - project: "ci-todo/app"
     ref: main
-    file: "main.yml"
+    file: "/ci-templates/main.yml"
