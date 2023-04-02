@@ -158,7 +158,7 @@ stages:
     - apk add --update mysql-dev mysql-client
   script:
     - mysql --version
-    - echo "SHOW tables;" | mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" ${MYSQL_DATABASE}
+    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" < "scripts/create-db.sql"
   tags:
     - ${RUNNER}
 
