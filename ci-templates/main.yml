@@ -144,8 +144,8 @@ stages:
     - mysql --version
   script:
     - echo ${MYSQL_DATABASE}
-    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" --execute="CREATE DATABASE IF NOT EXISTS `${MYSQL_DATABASE}`"
-    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" `${MYSQL_DATABASE}` < "scripts/init-db.sql"
+    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" --execute="CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`"
+    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" \`${MYSQL_DATABASE}\` < "scripts/init-db.sql"
   tags:
     - ${RUNNER}
 
