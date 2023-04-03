@@ -24,7 +24,7 @@ stages:
   - build
   - package
   - deploy
-  - database
+  - initialize
   - release
   - destroy
 
@@ -137,7 +137,7 @@ stages:
 
 
 .init-db:
-  stage: database
+  stage: initialize
   image: docker:latest
   before_script:
     - apk add --update mysql-dev mysql-client

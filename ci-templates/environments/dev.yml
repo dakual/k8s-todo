@@ -5,6 +5,11 @@ variables:
   AGENT: ci-todo/app:minikube
   DOMAIN: ${ENV}-${CI_COMMIT_REF_SLUG}.example.com
   NAMESPACE: ${ENV}-${CI_COMMIT_REF_SLUG:0:59}
+  MYSQL_HOST: "192.168.1.100"
+  MYSQL_PORT: 3306
+  MYSQL_USER: root
+  MYSQL_PASSWORD: root
+  MYSQL_DATABASE: ${ENV}-${CI_COMMIT_REF_SLUG:0:59}
 
 
 dev:build:backend:
@@ -36,6 +41,12 @@ dev:deploy:
   needs:
     - dev:build:backend
     - dev:build:frontend
+
+dev:initialize:
+  extends:
+    - .init-db
+  needs:
+    - dev:deploy
 
 dev:destroy:
   extends: 

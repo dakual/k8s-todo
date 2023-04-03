@@ -5,6 +5,11 @@ variables:
   AGENT: ci-todo/app:minikube
   DOMAIN: example.com
   NAMESPACE: ${ENV_LONG}
+  MYSQL_HOST: "192.168.1.100"
+  MYSQL_PORT: 3306
+  MYSQL_USER: root
+  MYSQL_PASSWORD: root
+  MYSQL_DATABASE: ${ENV_LONG}
 
 
 prd:build:backend:
@@ -42,6 +47,12 @@ prd:deploy:
   needs:
     - prd:package
   when: manual
+
+prd:initialize:
+  extends:
+    - .init-db
+  needs:
+    - prd:deploy
 
 prd:release:
   extends: 
