@@ -48,7 +48,7 @@ prd:deploy:
     - prd:package
   when: manual
 
-prd:initialize:
+prd:init-db:
   extends:
     - .init-db
   needs:

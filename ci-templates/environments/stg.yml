@@ -41,7 +41,7 @@ stg:deploy:
     - stg:build:backend
     - stg:build:frontend
 
-stg:initialize:
+stg:init-db:
   extends:
     - .init-db
   needs:
