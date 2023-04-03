@@ -143,9 +143,22 @@ stages:
     - apk add --update mysql-dev mysql-client
     - mysql --version
   script:
-    - echo ${MYSQL_DATABASE}
     - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" --execute="CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`"
     - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" ${MYSQL_DATABASE} < "scripts/init-db.sql"
+  tags:
+    - ${RUNNER}
+
+
+.seed-db:
+  stage: initialize
+  image: docker:latest
+  before_script:
+    - apk add --update mysql-dev mysql-client
+    - mysql --version
+  script:
+    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" ${MYSQL_DATABASE} < "scripts/seed-db.sql"
+  needs:
+    - .init-db
   tags:
     - ${RUNNER}
 

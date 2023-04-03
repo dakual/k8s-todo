@@ -47,6 +47,12 @@ stg:init-db:
   needs:
     - stg:deploy
 
+stg:seed-db:
+  extends:
+    - .seed-db
+  needs:
+    - stg:init-db
+
 stg:destroy:
   extends: 
     - .stg-destroy-rules
