@@ -4,6 +4,7 @@ variables:
   ENV_LONG: production
   AGENT: ci-todo/app:minikube
   DOMAIN: example.com
+  NAMESPACE: ${ENV_LONG}
 
 
 prd:build:backend:

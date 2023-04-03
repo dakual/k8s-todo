@@ -4,6 +4,7 @@ variables:
   ENV_LONG: development
   AGENT: ci-todo/app:minikube
   DOMAIN: ${ENV}-${CI_COMMIT_REF_SLUG}.example.com
+  NAMESPACE: ${ENV}-${CI_COMMIT_REF_SLUG:0:59}
 
 
 dev:build:backend:

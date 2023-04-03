@@ -90,12 +90,6 @@ stages:
       --username ${CI_REGISTRY_USER} \
       --password ${CI_REGISTRY_PASSWORD} \
       ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable
-    - |
-      if [ "${ENV}" == "dev" ]; then
-        export NAMESPACE=${ENV}-${CI_COMMIT_REF_SLUG:0:59}
-      else
-        export NAMESPACE=${ENV_LONG}
-      fi
     - curl -LO https://dl.k8s.io/release/v1.26.0/bin/linux/arm64/kubectl
     - chmod +x kubectl && mv kubectl /usr/bin/kubectl
     - kubectl config get-contexts
@@ -145,12 +139,6 @@ stages:
 .init-db:
   stage: database
   image: docker:latest
-  variables:
-    MYSQL_HOST: "192.168.1.100"
-    MYSQL_PORT: 3306
-    MYSQL_USER: root
-    MYSQL_PASSWORD: root
-    MYSQL_DATABASE: test
   before_script:
     - apk add --update mysql-dev mysql-client
     - mysql --version
