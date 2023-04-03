@@ -12,41 +12,41 @@ variables:
   MYSQL_DATABASE: ${ENV}-${CI_COMMIT_REF_SLUG}
 
 
-dev:build:backend:
-  variables:
-    APP: frontend
-    BUILD_ARGS: '--build-arg REACT_APP_BACKEND_URL=http://api.${DOMAIN}/api'
-  extends: 
-    - .dev-rules
-    - .build
+# dev:build:backend:
+#   variables:
+#     APP: frontend
+#     BUILD_ARGS: '--build-arg REACT_APP_BACKEND_URL=http://api.${DOMAIN}/api'
+#   extends: 
+#     - .dev-rules
+#     - .build
 
-dev:build:frontend:
-  variables:
-    APP: backend
-  extends: 
-    - .dev-rules
-    - .build
+# dev:build:frontend:
+#   variables:
+#     APP: backend
+#   extends: 
+#     - .dev-rules
+#     - .build
 
-dev:deploy:
-  extends: 
-    - .dev-rules
-    - .deploy
-  environment:
-    name: ${ENV_LONG}/${CI_COMMIT_REF_SLUG}
-    url: https://${DOMAIN}
-    on_stop: dev:destroy
-    deployment_tier: development
-    auto_stop_in: 5 minutes
-  resource_group: ${ENV_LONG}/${CI_COMMIT_REF_SLUG}
-  needs:
-    - dev:build:backend
-    - dev:build:frontend
+# dev:deploy:
+#   extends: 
+#     - .dev-rules
+#     - .deploy
+#   environment:
+#     name: ${ENV_LONG}/${CI_COMMIT_REF_SLUG}
+#     url: https://${DOMAIN}
+#     on_stop: dev:destroy
+#     deployment_tier: development
+#     auto_stop_in: 5 minutes
+#   resource_group: ${ENV_LONG}/${CI_COMMIT_REF_SLUG}
+#   needs:
+#     - dev:build:backend
+#     - dev:build:frontend
 
 dev:init-db:
   extends:
     - .init-db
-  needs:
-    - dev:deploy
+  # needs:
+  #   - dev:deploy
 
 dev:destroy:
   extends: 
