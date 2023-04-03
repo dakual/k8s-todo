@@ -9,8 +9,7 @@ variables:
   MYSQL_PORT: 3306
   MYSQL_USER: root
   MYSQL_PASSWORD: root
-  MYSQL_DATABASE: ${ENV_LONG}
-
+  MYSQL_DATABASE: ${PROJECT}-${ENV_LONG}
 
 
 stg:build:backend:

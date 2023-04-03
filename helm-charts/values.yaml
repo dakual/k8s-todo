@@ -1,19 +1,18 @@
 deployments:
   backend:
     labels:
-      env: deneme
     replicas: 1
     env:
-      DB_HOST: "host.minikube.internal"
-      DB_USER: "root"
-      DB_PASSWORD: "root"
-      DB_NAME: "todo"
-      DB_PORT: "3306"
+      DB_HOST: localhost
+      DB_USER: username
+      DB_PASSWORD: password
+      DB_NAME: database
+      DB_PORT: port
       CLIENT_ORIGIN: "http://localhost.com"
       NODE_PORT: "3000"
     image:
-      repository: registry.gitlab.com/ci-todo/app/backend
-      tag: prd-release-v1-3
+      repository: backend
+      tag: latest
       imagePullPolicy: Always
     command:
     args:
@@ -25,7 +24,7 @@ deployments:
       port: 3000
     ingress:
       className: nginx
-      host: api.example.com
+      host: localhost
       port: 3000
       annotations:
         nginx.ingress.kubernetes.io/rewrite-target: /
@@ -33,12 +32,11 @@ deployments:
 
   frontend:
     labels:
-      env: deneme
     replicas: 1
     env:
     image:
-      repository: registry.gitlab.com/ci-todo/app/frontend
-      tag: prd-release-v1-3
+      repository: frontend
+      tag: latest
       imagePullPolicy: Always
     command:
     args:
@@ -50,7 +48,7 @@ deployments:
       port: 80
     ingress:
       className: nginx
-      host: example.com
+      host: localhost
       port: 80
       annotations:
         nginx.ingress.kubernetes.io/rewrite-target: /
