@@ -83,7 +83,6 @@ stages:
   variables:
     IMAGE_TAG: ${ENV}-${CI_COMMIT_REF_SLUG}
   before_script:
-    - apk add --update mysql-dev mysql-client
     - chmod 600 $KUBECONFIG
     - helm plugin install --version=v0.10.3 https://github.com/chartmuseum/helm-push.git
     - |
@@ -143,10 +142,10 @@ stages:
 
 
 .init-db:
-  extends:
-    - .deploy-configure
   stage: initialize
   image: docker:latest
+  before_script:
+    - apk add --update mysql-dev mysql-client
   script:
     - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" --execute="CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`"
     - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" ${MYSQL_DATABASE} < "scripts/init-db.sql"
@@ -155,10 +154,10 @@ stages:
 
 
 .seed-db:
-  extends:
-    - .deploy-configure
   stage: initialize
   image: docker:latest
+  before_script:
+    - apk add --update mysql-dev mysql-client
   script:
     - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" ${MYSQL_DATABASE} < "scripts/seed-db.sql"
   tags:
@@ -186,6 +185,7 @@ stages:
     - .deploy-configure
   stage: destroy
   script:
+    - apk add --update mysql-dev mysql-client
     - helm uninstall ${PROJECT} --namespace ${NAMESPACE}
     - kubectl delete namespace ${NAMESPACE}
     - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" --execute="DROP DATABASE IF EXISTS \`${MYSQL_DATABASE}\`"
