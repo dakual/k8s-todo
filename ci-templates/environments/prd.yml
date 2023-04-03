@@ -61,7 +61,6 @@ prd:release:
   needs:
     - prd:deploy
 
-
 prd:destroy:
   extends: 
     - .prd-destroy-rules

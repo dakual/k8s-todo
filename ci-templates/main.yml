@@ -82,7 +82,8 @@ stages:
     entrypoint: [""]
   variables:
     IMAGE_TAG: ${ENV}-${CI_COMMIT_REF_SLUG}
-  before_script: 
+  before_script:
+    - apk add --update mysql-dev mysql-client
     - chmod 600 $KUBECONFIG
     - helm plugin install --version=v0.10.3 https://github.com/chartmuseum/helm-push.git
     - |
@@ -129,6 +130,11 @@ stages:
         --set deployments.backend.image.repository=${CI_REGISTRY_IMAGE}/backend  \
         --set deployments.backend.image.tag=${IMAGE_TAG}  \
         --set deployments.backend.ingress.host=api.${DOMAIN} \
+        --set deployments.backend.env.DB_HOST=${MYSQL_HOST} \
+        --set deployments.backend.env.DB_PORT=${MYSQL_PORT} \
+        --set deployments.backend.env.DB_USER=${MYSQL_USER} \
+        --set deployments.backend.env.DB_PASSWORD=${MYSQL_PASSWORD} \
+        --set deployments.backend.env.DB_NAME=${MYSQL_DATABASE} \
         --set deployments.frontend.image.repository=${CI_REGISTRY_IMAGE}/frontend  \
         --set deployments.frontend.image.tag=${IMAGE_TAG}  \
         --set deployments.frontend.ingress.host=${DOMAIN}
@@ -137,11 +143,10 @@ stages:
 
 
 .init-db:
+  extends:
+    - .deploy-configure
   stage: initialize
   image: docker:latest
-  before_script:
-    - apk add --update mysql-dev mysql-client
-    - mysql --version
   script:
     - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" --execute="CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`"
     - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" ${MYSQL_DATABASE} < "scripts/init-db.sql"
@@ -150,15 +155,12 @@ stages:
 
 
 .seed-db:
+  extends:
+    - .deploy-configure
   stage: initialize
   image: docker:latest
-  before_script:
-    - apk add --update mysql-dev mysql-client
-    - mysql --version
   script:
     - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" ${MYSQL_DATABASE} < "scripts/seed-db.sql"
-  needs:
-    - .init-db
   tags:
     - ${RUNNER}
 
@@ -186,5 +188,6 @@ stages:
   script:
     - helm uninstall ${PROJECT} --namespace ${NAMESPACE}
     - kubectl delete namespace ${NAMESPACE}
+    - mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" --port="${MYSQL_PORT}" --execute="DROP DATABASE IF EXISTS \`${MYSQL_DATABASE}\`"
   tags:
     - ${RUNNER}
