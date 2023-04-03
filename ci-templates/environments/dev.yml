@@ -48,13 +48,13 @@ dev:init-db:
   # needs:
   #   - dev:deploy
 
-dev:destroy:
-  extends: 
-    - .dev-destroy-rules
-    - .destroy
-  environment:
-    name: ${ENV_LONG}/${CI_COMMIT_REF_SLUG}
-    action: stop
-  needs:
-    - dev:deploy
+# dev:destroy:
+#   extends: 
+#     - .dev-destroy-rules
+#     - .destroy
+#   environment:
+#     name: ${ENV_LONG}/${CI_COMMIT_REF_SLUG}
+#     action: stop
+#   needs:
+#     - dev:deploy
 
